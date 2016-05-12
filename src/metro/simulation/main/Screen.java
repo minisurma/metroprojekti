@@ -6,21 +6,31 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import metro.simulation.objects.Metro;
+import metro.simulation.objects.Raiteet;
 
 public class Screen extends JPanel implements KeyListener, MouseWheelListener, Runnable{
 
 	private static final long serialVersionUID = 817809648486114486L;
 	
-	public static final int width = 15, height = 10;
+	public static final int width = 20, height = 15;
+	public static List<Metro> metrot = new ArrayList<Metro>();
+	public static List<Metro> lisättävät = new ArrayList<Metro>();
+	public static Kello kello;
 	
 	private List<Chunk> chunks = new ArrayList<Chunk>();
 	
 	public Screen(Main frame){
 		this.addMouseWheelListener(this);
 		frame.addKeyListener(this);
+		Raiteet.loadRails();
+		addMouseListener(new KeyHandler());
+		kello = new Kello();
 		loadChunks();
 		Thread thread = new Thread(this);
 		thread.start();
@@ -32,6 +42,17 @@ public class Screen extends JPanel implements KeyListener, MouseWheelListener, R
 		for(Chunk chunk : chunks){
 			chunk.draw(g);
 		}
+		g.drawImage(Raiteet.raiteet, Chunk.additionx, Chunk.additiony, (int) (Chunk.zoom*Raiteet.raiteet.getWidth()+1), (int) (Chunk.zoom*Raiteet.raiteet.getHeight()+1), null);
+		try{
+			for(Metro metro : metrot){
+				metro.draw(g);
+			}
+		} catch(ConcurrentModificationException e){
+			
+		}
+		metrot.addAll(lisättävät);
+		lisättävät.clear();
+		kello.draw(g);
 	}
 
 	@Override
@@ -40,8 +61,8 @@ public class Screen extends JPanel implements KeyListener, MouseWheelListener, R
 	}
 	
 	private void loadChunks(){
-		for(int x = 0; x < 15; x++){
-			for(int y = 0; y < 10; y++){
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
 				chunks.add(new Chunk(x, y));
 			}
 		}
