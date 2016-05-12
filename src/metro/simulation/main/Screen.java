@@ -29,7 +29,6 @@ public class Screen extends JPanel implements KeyListener, MouseWheelListener, R
 		this.addMouseWheelListener(this);
 		frame.addKeyListener(this);
 		Raiteet.loadRails();
-		addMouseListener(new KeyHandler());
 		kello = new Kello();
 		loadChunks();
 		Thread thread = new Thread(this);
