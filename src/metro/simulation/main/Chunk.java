@@ -8,11 +8,11 @@ import javax.imageio.ImageIO;
 
 public class Chunk {
 	
-	private static double zoom = 1.0;
+	public static double zoom = 1.0;
 	
 	public static int additionx = 0;
 	public static int additiony = 0;
-	private static int imagewidth;
+	public static int imagewidth;
 	
 	private int x, y;
 	private BufferedImage image;
